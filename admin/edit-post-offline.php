@@ -17,20 +17,20 @@ if (isset($_POST['update'])) {
     // Set last_updated_by sebagai Admin (sesuaikan jika perlu)
     $last_updated_by = 'Admin';
 
-    // Hapus semua gambar terkait postingan
-    $delete_query_images = "DELETE FROM offline_post_images WHERE post_id='$pid'";
-    $delete_result_images = mysqli_query($con, $delete_query_images);
-
     // Inisialisasi variabel untuk menampung pesan kesalahan
     $error = "";
 
-    // Jika terjadi kesalahan saat menghapus gambar terkait postingan
-    if (!$delete_result_images) {
-        $error = "Error deleting post images: " . mysqli_error($con);
-    }
-
     // Jika ada file yang diunggah
     if (!empty($_FILES['images']['tmp_name'][0])) {
+
+        // Hapus semua gambar terkait postingan
+        $delete_query_images = "DELETE FROM offline_post_images WHERE post_id='$pid'";
+        $delete_result_images = mysqli_query($con, $delete_query_images);
+
+        // Jika terjadi kesalahan saat menghapus gambar terkait postingan
+        if (!$delete_result_images) {
+            $error = "Error deleting post images: " . mysqli_error($con);
+        }
         // Inisialisasi nomor serial
         $serialNumber = 1;
 
@@ -58,21 +58,18 @@ if (isset($_POST['update'])) {
         }
     } else {
         // Jika tidak ada gambar yang diunggah
-        $error .= "<br>Tidak ada gambar yang diunggah.";
+        $error .= "Tidak ada gambar yang update.";
     }
 
-    // Jika tidak terjadi kesalahan selama proses penghapusan dan penambahan gambar
-    if (empty($error)) {
-        // Update data pada tabel offline_posts
-        $update_query_posts = "UPDATE offline_posts SET title='$title', source_id='$source', category_id='$category_id', description='$description', slug='$slug', last_updated_by='$last_updated_by', updated_date=NOW() WHERE id='$pid'";
-        $update_result_posts = mysqli_query($con, $update_query_posts);
+    // Update data pada tabel offline_posts
+    $update_query_posts = "UPDATE offline_posts SET title='$title', source_id='$source', category_id='$category_id', description='$description', slug='$slug', last_updated_by='$last_updated_by', updated_date=NOW() WHERE id='$pid'";
+    $update_result_posts = mysqli_query($con, $update_query_posts);
 
-        // Jika terjadi kesalahan saat melakukan pembaruan data postingan
-        if (!$update_result_posts) {
-            $error = "Error updating post: " . mysqli_error($con);
-        } else {
-            $msg = "Data berhasil diperbarui.";
-        }
+    // Jika terjadi kesalahan saat melakukan pembaruan data postingan
+    if (!$update_result_posts) {
+        $error = "Error updating post: " . mysqli_error($con);
+    } else {
+        $msg = "Data berhasil diperbarui.";
     }
 }
 
@@ -250,18 +247,19 @@ if ($result) {
                                                 <div class="col-sm-12">
                                                     <div class="card-box">
                                                         <h4 class="m-b-30 m-t-0 header-title"><b>Gambar Terkait</b></h4>
-                                                        <?php
-                                                        // Fetching active categories
-                                                        $ret = mysqli_query($con, "SELECT * FROM offline_post_images WHERE post_id = $pid");
-                                                        while ($result = mysqli_fetch_array($ret)) {
-                                                        ?>
-                                                            <div class="image-upload-container">
-                                                                <input type="file" class="form-control image-input" name="images[]" multiple>
+                                                        <div class="image-upload-container">
+                                                            <input type="file" class="form-control image-input" name="images[]" multiple>
+                                                            <?php
+                                                            // Fetching active categories
+                                                            $ret = mysqli_query($con, "SELECT * FROM offline_post_images WHERE post_id = $pid");
+                                                            while ($result = mysqli_fetch_array($ret)) {
+                                                            ?>
+
                                                                 <div class="image-preview mt-3">
                                                                     <img class="editimage" src="<?php echo $result['url']; ?>" alt="">
                                                                 </div>
-                                                            </div>
-                                                        <?php } ?>
+                                                            <?php } ?>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

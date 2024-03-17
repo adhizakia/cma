@@ -33,7 +33,7 @@ include('includes/config.php');
         <div class="container d-flex justify-content-between align-items-center text-white">
             <div class="text-section col-6 mt-5">
                 <h1 class="fw-bolder">Content Media Analysis </h1>
-                <p>Content Media Analysis merupakan website berita karanganyar memberikan analisis tajam untuk membedakan apakah berita tersebut membawa dampak positif atau negatif. Dari inisiatif pembangunan hingga acara budaya,  kami memecahkan setiap informasi menjadi potongan-potongan yang  dapat dimengerti dengan mudah, memberikan Anda wawasan yang lebih dalam tentang realitas sosial dan politik di Karanganyar.</p>    
+                <p>Content Media Analysis merupakan website berita karanganyar memberikan analisis tajam untuk membedakan apakah berita tersebut membawa dampak positif atau negatif. Dari inisiatif pembangunan hingga acara budaya, kami memecahkan setiap informasi menjadi potongan-potongan yang dapat dimengerti dengan mudah, memberikan Anda wawasan yang lebih dalam tentang realitas sosial dan politik di Karanganyar.</p>
             </div>
             <img class="img-fluid w-25 col-4 mt-5" src="asset/Logo.png" alt="">
         </div>
@@ -81,6 +81,7 @@ include('includes/config.php');
                         online_posts.id AS online_posts,
                         online_posts.title AS title,
                         online_posts.link AS link,
+                        online_posts.active AS online_posts_active,
                         online_posts.posting_date AS online_date,
                         online_post_images.id AS id_images,
                         online_post_images.*, 
@@ -97,6 +98,7 @@ include('includes/config.php');
                     JOIN online_post_images ON online_posts.id = online_post_images.post_id AND min_images.min_serial_number = online_post_images.serial_number
                     JOIN online_post_analyze ON online_posts.analyze_id = online_post_analyze.id
                     LEFT JOIN categories ON online_posts.category_id = categories.id  -- menggunakan LEFT JOIN agar tidak kehilangan data jika tidak ada kategori yang cocok
+                    WHERE online_posts.active = 1
                     ORDER BY online_posts.id DESC limit 8 -- dilimit hanya 8 berita yang muncul di beranda berdasarkan input terakhir;
                     ";
 
@@ -165,7 +167,7 @@ include('includes/config.php');
                 </div>
 
                 <!-- Blog Post -->
-                    <h4 class="headeroffline p-2 m mb-4 w-100 bg-body-secondary" id="header-offline">Offline</h4>
+                <h4 class="headeroffline p-2 m mb-4 w-100 bg-body-secondary" id="header-offline">Offline</h4>
                 <div class="row">
                     <?php
                     /* if (isset($_GET['pageno'])) {
@@ -199,6 +201,7 @@ include('includes/config.php');
                         offline_posts.slug AS slug,
                         offline_posts.title AS title,
                         offline_posts.posting_date AS offline_date,
+                        offline_posts.active AS offline_post_active,
                         offline_post_images.id AS id_images,
                         offline_post_images.*, 
                         offline_post_analyze.id AS id_analyze,
@@ -214,6 +217,7 @@ include('includes/config.php');
                     JOIN offline_post_images ON offline_posts.id = offline_post_images.post_id AND min_images.min_serial_number = offline_post_images.serial_number
                     JOIN offline_post_analyze ON offline_posts.analyze_id = offline_post_analyze.id
                     LEFT JOIN categories ON offline_posts.category_id = categories.id  -- menggunakan LEFT JOIN agar tidak kehilangan data jika tidak ada kategori yang cocok
+                    WHERE offline_posts.active = 1
                     ORDER BY offline_posts.id DESC LIMIT 100;
                         "; // Adjust the JOIN condition based on your table structure
 
